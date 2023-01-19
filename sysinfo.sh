@@ -83,7 +83,9 @@ get_disk_free(){
 print_process_info(){
     echo
     p "资源占用前十的进程" " "
-    ps --no-headers -A -o %cpu,%mem,user,comm --sort -%mem |head -n10 |awk '{printf("\033[0;32m%4.1f%%CPU %4.1f%%MEM\033[0m (%-8s) %s\n",$1,$2,$3,$4)}'
+    # 输出格式为 n.n% n.n% (用户) 进程命令行
+    ps --no-headers -A -o %mem,%cpu,user,comm --sort -%mem |head -n10 |awk '{printf("\033[0;32m%7.1f%% %6.1f%%\033[0m (%-8s) %s\n",$1,$2,$3,$4)}'
+    printf "\033[0;32m%s %s\033[0m (%s) %s\n" "内存占用" "CPU占用" "用户    " "进程命令行"
 }
 
 p(){
