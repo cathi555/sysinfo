@@ -6,6 +6,7 @@ print_info(){
     print_cpu_info
     print_mem_info
     print_disk_info
+    print_process_info
     echo
 }
 
@@ -77,6 +78,12 @@ print_disk_info(){
 get_disk_free(){
     # 输出格式为 n MiB / n MiB (n.n%)
     lsblk -b -n -o "MOUNTPOINT,FSSIZE,FSAVAIL" |grep "^${disk} \+" |awk '{total=$2 ;free=$3 ;printf("%.3f GiB / %.3f GiB (%.1f%%)",free/1024/1024/1024,total/1024/1024/1024,free/total*100)}'
+}
+
+print_process_info(){
+    echo
+    p "资源占用前十的进程" " "
+    ps --no-headers -A -o %cpu,%mem,user,comm --sort -%mem |head -n10 |awk '{printf("\033[0;32m%.1f%%CPU %.1f%%MEM\033[0m (%s)\t%s\n",$1,$2,$3,$4)}'
 }
 
 p(){
