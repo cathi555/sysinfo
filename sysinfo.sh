@@ -57,12 +57,12 @@ get_mem_free(){
     # 这里的 free 实际上是 available
 #    awk '/^MemAvailable:/ {printf("%.0f MiB",$2/1024)}' /proc/meminfo
 #    awk '/^MemTotal:/{total=$2} /^MemAvailable:/{free=$2} END{printf("%.0f MiB (%.1f%%)",free/1024,free/total*100)}' /proc/meminfo
-    awk '/^MemTotal:/{total=$2} /^MemAvailable:/{free=$2} END{printf("%.0f MiB / %.0f MiB (%.1f%%)",free/1024,total/1024,free/total*100)}' /proc/meminfo
+    awk '/^MemTotal:/{total=$2} /^MemAvailable:/{free=$2} END{printf("%.3f GiB / %.3f GiB (%.1f%%)",free/1024/1024,total/1024/1024,free/total*100)}' /proc/meminfo
 }
 
 get_swap_free(){
     # 输出格式为 n MiB / n MiB (n.n%)
-    grep "${swap}" /proc/swaps |awk '{total=$3 ;used=$4 ;free=total-used ;printf("%.0f MiB / %.0f MiB (%.1f%%)",free/1024,total/1024,free/total*100)}'
+    grep "${swap}" /proc/swaps |awk '{total=$3 ;used=$4 ;free=total-used ;printf("%.3f GiB / %.3f GiB (%.1f%%)",free/1024/1024,total/1024/1024,free/total*100)}'
 }
 
 print_disk_info(){
