@@ -9,7 +9,7 @@ print_info(){
 
 print_host_info(){
     echo
-    p "主机型号" "$(get_cpu_model)"
+    p "主机型号" "$(get_host_model)"
     p "内核名称" "$(uname -s)"
     p "内核版本" "$(uname -r)"
     p "操作系统" "$(uname -o)"
