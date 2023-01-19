@@ -4,9 +4,11 @@ print_info(){
     printf "\033[0;30;45m---- 系统信息 (%s) ----\033[0m\n" "$(date +"%Y-%m-%d %H:%M:%S")"
     print_host_info
     print_cpu_info
+    echo
 }
 
 print_host_info(){
+    echo
     p "主机型号" "$(get_cpu_model)"
     p "内核名称" "$(uname -s)"
     p "内核版本" "$(uname -r)"
@@ -19,6 +21,7 @@ get_host_model(){
 }
 
 print_cpu_info(){
+    echo
     p "CPU型号" "$(get_cpu_model)"
     p "CPU核心数" "$(get_cpu_count)"
     p "CPU频率" "$(get_cpu_freq)"
