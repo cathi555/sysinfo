@@ -7,12 +7,7 @@ print_info(){
 }
 
 print_host_info(){
-    local model
-    model="$(get_host_model)"
-    if [[ "${model}" ]]
-    then
-        p "主机型号" "${model}"
-    fi
+    p "主机型号" "$(get_cpu_model)"
     p "内核名称" "$(uname -s)"
     p "内核版本" "$(uname -r)"
     p "操作系统" "$(uname -o)"
@@ -24,22 +19,9 @@ get_host_model(){
 }
 
 print_cpu_info(){
-    local model count freq
-    model="$(get_cpu_model)"
-    if [[ "${model}" ]]
-    then
-        p "CPU型号" "${model}"
-    fi
-    count="$(get_cpu_count)"
-    if [[ "${count}" ]]
-    then
-        p "CPU核心数" "${count}"
-    fi
-    freq="$(get_cpu_freq)"
-    if [[ "${freq}" ]]
-    then
-        p "CPU频率" "${freq}"
-    fi
+    p "CPU型号" "$(get_cpu_model)"
+    p "CPU核心数" "$(get_cpu_count)"
+    p "CPU频率" "$(get_cpu_freq)"
 }
 
 get_cpu_model(){
@@ -55,8 +37,8 @@ get_cpu_freq(){
 }
 
 p(){
-    # 打印信息
-    printf "\033[0;32m%s:\033[0m %s\n" "$1" "$2"
+    # 第二个参数不为空时打印信息
+    [[ "$2" ]]&&printf "\033[0;32m%s:\033[0m %s\n" "$1" "$2"
 }
 
 print_info 2>./err.log
