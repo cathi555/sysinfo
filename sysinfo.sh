@@ -5,6 +5,7 @@ print_info(){
     print_host_info
     print_cpu_info
     print_mem_info
+    print_disk_info
     echo
 }
 
@@ -64,6 +65,19 @@ get_swap_free(){
     grep "${swap}" /proc/swaps |awk '{total=$3 ;used=$4 ;free=total-used ;printf("%.0f MiB / %.0f MiB (%.1f%%)",free/1024,total/1024,free/total*100)}'
 }
 
+print_disk_info(){
+    # 只显示挂载的节点
+    echo
+    for disk in $(lsblk -n -o MOUNTPOINT |xargs)
+    do
+        p "磁盘(${disk})余量" "$(get_disk_free)"
+    done
+}
+
+get_disk_free(){
+    # 输出格式为 n MiB / n MiB (n.n%)
+    lsblk -b -n -o "MOUNTPOINT,FSSIZE,FSAVAIL" |grep "^${disk} \+" |awk '{total=$2 ;free=$3 ;printf("%.3f GiB / %.3f GiB (%.1f%%)",free/1024/1024/1024,total/1024/1024/1024,free/total*100)}'
+}
 
 p(){
     # 第二个参数不为空时打印信息
