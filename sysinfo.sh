@@ -4,6 +4,7 @@ print_info(){
     printf "\033[0;30;45m---- 系统信息 (%s) ----\033[0m\n" "$(date +"%Y-%m-%d %H:%M:%S")"
     print_host_info
     print_cpu_info
+    print_mem_info
     echo
 }
 
@@ -32,11 +33,31 @@ get_cpu_model(){
 }
 
 get_cpu_count(){
+    # 输出为 n
     grep "^processor" /proc/cpuinfo |wc -l
 }
 
 get_cpu_freq(){
+    # 输出为 n.nnn
     awk '{printf("%.3f GHz",$0/1000/1000)}' /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_max_freq
+}
+
+print_mem_info(){
+    echo
+    p "内存总量" "$(get_mem_total)"
+    p "内存余量" "$(get_mem_free)"
+}
+
+get_mem_total(){
+    # 输出为 n MiB
+    awk '/^MemTotal:/ {printf("%.0f MiB",$2/1024)}' /proc/meminfo
+}
+
+get_mem_free(){
+    # 输出为 n MiB (n.n%)
+    # 这里的 free 实际上是 available
+#    awk '/^MemAvailable:/ {printf("%.0f MiB",$2/1024)}' /proc/meminfo
+    awk '/^MemTotal:/{total=$2} /^MemAvailable:/{free=$2} END{printf("%.0f MiB (%.1f%%)",free/1024,free/total*100)}' /proc/meminfo
 }
 
 p(){
