@@ -33,27 +33,37 @@ get_cpu_model(){
 }
 
 get_cpu_count(){
-    # 输出为 n
+    # 输出格式为 n
     grep "^processor" /proc/cpuinfo |wc -l
 }
 
 get_cpu_freq(){
-    # 输出为 n.nnn
+    # 输出格式为 n.nnn GHz
     awk '{printf("%.3f GHz",$0/1000/1000)}' /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_max_freq
 }
 
 print_mem_info(){
     echo
     p "内存余量" "$(get_mem_free)"
+    for swap in $(awk 'NR>1{print $1}' /proc/swaps)
+    do
+        p "SWAP(${swap})余量" "$(get_swap_free)"
+    done
 }
 
 get_mem_free(){
-    # 输出为 n MiB / n MiB (n.n%)
+    # 输出格式为 n MiB / n MiB (n.n%)
     # 这里的 free 实际上是 available
 #    awk '/^MemAvailable:/ {printf("%.0f MiB",$2/1024)}' /proc/meminfo
 #    awk '/^MemTotal:/{total=$2} /^MemAvailable:/{free=$2} END{printf("%.0f MiB (%.1f%%)",free/1024,free/total*100)}' /proc/meminfo
     awk '/^MemTotal:/{total=$2} /^MemAvailable:/{free=$2} END{printf("%.0f MiB / %.0f MiB (%.1f%%)",free/1024,total/1024,free/total*100)}' /proc/meminfo
 }
+
+get_swap_free(){
+    # 输出格式为 n MiB / n MiB (n.n%)
+    grep "${swap}" /proc/swaps |awk '{total=$3 ;used=$4 ;free=total-used ;printf("%.0f MiB / %.0f MiB (%.1f%%)",free/1024,total/1024,free/total*100)}'
+}
+
 
 p(){
     # 第二个参数不为空时打印信息
