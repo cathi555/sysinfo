@@ -15,7 +15,7 @@ print_host_info(){
 
 p(){
     # 打印信息
-    printf "\033[0;32m%s:\033[0m%s" "$1" "$2"
+    printf "\033[0;32m%s:\033[0m%s\n" "$1" "$2"
 }
 
 print_info
