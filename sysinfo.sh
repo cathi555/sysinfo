@@ -44,20 +44,15 @@ get_cpu_freq(){
 
 print_mem_info(){
     echo
-    p "内存总量" "$(get_mem_total)"
     p "内存余量" "$(get_mem_free)"
 }
 
-get_mem_total(){
-    # 输出为 n MiB
-    awk '/^MemTotal:/ {printf("%.0f MiB",$2/1024)}' /proc/meminfo
-}
-
 get_mem_free(){
-    # 输出为 n MiB (n.n%)
+    # 输出为 n MiB / n MiB (n.n%)
     # 这里的 free 实际上是 available
 #    awk '/^MemAvailable:/ {printf("%.0f MiB",$2/1024)}' /proc/meminfo
-    awk '/^MemTotal:/{total=$2} /^MemAvailable:/{free=$2} END{printf("%.0f MiB (%.1f%%)",free/1024,free/total*100)}' /proc/meminfo
+#    awk '/^MemTotal:/{total=$2} /^MemAvailable:/{free=$2} END{printf("%.0f MiB (%.1f%%)",free/1024,free/total*100)}' /proc/meminfo
+    awk '/^MemTotal:/{total=$2} /^MemAvailable:/{free=$2} END{printf("%.0f MiB / %.0f MiB (%.1f%%)",free/1024,total/1024,free/total*100)}' /proc/meminfo
 }
 
 p(){
